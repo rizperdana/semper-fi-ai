@@ -3,17 +3,22 @@ version: "3.9"
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
+    restart: always
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     env_file:
       - ./.env
-    ports:
-      - 8000:8000
+    volumes:
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
+    expose:
+      - 8000
     depends_on:
+      - redis
       - db
+
   db:
     image: postgres:14
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -23,5 +28,34 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7
+
+  celery:
+    build: .
+    restart: always
+    command: celery -A config worker -l info
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+      - web
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - ${NGINX_PORT}:80
+    volumes:
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
+    depends_on:
+      - web
+
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
