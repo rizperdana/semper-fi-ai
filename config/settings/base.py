@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    # 3rd party apps
+    'tailwind',
     # Local apps
-    # 'chat',
+    'chat',
+    'theme',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +137,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = config("REDIS_BACKEND")
+
+# Tailwind
+TAILWIND_APP_NAME = "theme"
