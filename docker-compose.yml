@@ -10,11 +10,11 @@ services:
     volumes:
       - static_volume:/code/staticfiles
       - media_volume:/code/mediafiles
-    expose:
-      - 8000
     depends_on:
       - redis
       - db
+    ports:
+      - 8000:8000
 
   db:
     image: postgres:14
@@ -42,7 +42,6 @@ services:
     depends_on:
       - db
       - redis
-      - web
 
   nginx:
     build: ./nginx

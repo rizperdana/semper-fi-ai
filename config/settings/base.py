@@ -140,3 +140,13 @@ CELERY_RESULT_BACKEND = config("REDIS_BACKEND")
 
 # Tailwind
 TAILWIND_APP_NAME = "theme"
+
+# Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [config("REDIS_BACKEND")],
+        },
+    },
+}
